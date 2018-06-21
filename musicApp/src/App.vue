@@ -22,7 +22,7 @@ export default {
 
 <style lang='stylus' rel='stylesheet/stylus'>
 #app
-  color color-background
+  color $color-background
   .header
     position relative
     top 0px
