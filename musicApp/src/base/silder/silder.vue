@@ -35,6 +35,11 @@ export default {
         this._play()
       }
     }, 20)
+    window.addEventListener('resize', () => {
+      // 当屏幕切换，需要重新设置宽度
+      this._setSilderWidth()
+      this.silder.refresh()
+    })
   },
   // 开始销毁示例时调用，此时示例还可以使用
   beforeDestroy () {
@@ -52,12 +57,10 @@ export default {
   methods: {
     _play () {
       let pageIndex = this.currentIndex + 1
-      console.log('----   1  ----', pageIndex)
       if (this.loop) {
         pageIndex = (pageIndex === this.dots.length) ? 0 : pageIndex
       }
       this.timer = setTimeout(() => {
-        console.log('----   2  ----', pageIndex)
         this.silder.goToPage(pageIndex, 0, 400)
       }, this.interval)
     },
@@ -155,8 +158,6 @@ export default {
 <style lang='stylus' rel='stylesheet/stylus'>
 @import "~common/stylus/variable.styl";
 .silder-wrapper
-  width 100%
-  overflow hidden
   min-height 1px
   .silder-group
     position relative
@@ -168,18 +169,18 @@ export default {
       overflow hidden
       text-align center
       a
-        display inline-block
+        display block
         width 100%
         overflow hidden
         text-decoration none
       img
-        display inline-block
+        display block
         width 100%
   .dots
-    position relative
+    position absolute
     right 0
     left 0
-    bottom 24px
+    bottom 12px
     text-align center
     font-size 0
     .dot
