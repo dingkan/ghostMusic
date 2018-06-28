@@ -78,7 +78,7 @@ export default {
   watch: {
     // 监听数据变化来刷新
     data () {
-      this.setTimeout(() => {
+      setTimeout(() => {
         this.refresh()
       }, this.refreshDelay)
     }
