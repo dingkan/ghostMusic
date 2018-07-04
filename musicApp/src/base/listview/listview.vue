@@ -1,22 +1,23 @@
 <!--  -->
 <template>
-      <Scroll class="singer-list" :data="data" >
+  <scroll class="listview" ref="listview" :data="data" :probeType="probeType" @scroll="scroll" :listenScroll="listenScroll">
+    <ul>
+      <li v-for="(group, index) in data" :key="index" class="list-group" ref="listGroup">
+        <h2 class="list-group-title">{{group.title}}</h2>
         <ul>
-            <li v-for="(item, index) in data" :key="index" class="group-item">
-              <h2 class="group-title">{{item.title}}</h2>
-              <ul>
-                <li class="group-cell" v-for="(value, index) in item.items" :key="index">
-                  <div class="group-avartar">
-                    <img v-lazy="value.avatar">
-                  </div>
-                  <div class="group-content">
-                    <span class="group-cell-name">{{value.name}}</span>
-                  </div>
-                </li>
-              </ul>
-            </li>
-          </ul>
-    </Scroll>
+          <li v-for="(item, index) in group.items" :key="index" class="list-group-item">
+            <img class="avatar" v-lazy="item.avatar">
+            <span class="name">{{item.name}}</span>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <div class="list-shortcut">
+      <ul>
+        <li v-for="(item, index) in shortcutList" :key="index" :data-index="index" class="item">{{item}}</li>
+      </ul>
+    </div>
+  </scroll>
 </template>
 
 <script type='text/ecmascript-6'>
@@ -30,49 +31,67 @@ export default {
       }
     }
   },
+  created () {
+    this.probeType = 3
+    this.listenScroll = true
+  },
   components: {
     Scroll
+  },
+  computed: {
+    shortcutList() {
+      return this.data.map((group) => {
+        return group.title.substr(0, 1)
+      })
+    }
   }
 }
-
 </script>
+
 <style lang='stylus' rel='stylesheet/stylus'>
 @import '~common/stylus/variable.styl'
-.singer-list
-  position: relative
-  width: 100%
-  height: 100%
-  overflow: hidden
-  .group-item
-    width 100%
-    font-size 0
-    padding-bottom 20px
-    .group-title
-      font-size 12px
-      line-height 30px
+.listview
+  position relative
+  height 100%
+  width 100%
+  overflow hidden
+  background $color-background
+  .list-group
+    padding-bottom 30px
+    .list-group-title
       height 30px
-      color $color-text-l
-      background $color-dialog-background
+      line-height 30px
+      font-size $font-size-small
       padding-left 20px
-    .group-cell
+      color $color-text-l
+      background $color-highlight-background
+    .list-group-item
       display flex
       align-items center
       padding 20px 0 0 30px
-      .group-avartar
-        display inline-block
+      .avatar
         width 50px
         height 50px
-        img
-          width 50px
-          height 50px
-          background-size 50px 50px
-          border-radius 50%
-      .group-content
-        display inline-block
-        line-height 100%
+        border-radius 50%
+      .name
         margin-left 20px
-        font-size 14px
         color $color-text-l
-        font-weight 400
-        vertical-align baseline
+        font-size $font-size-medium
+  .list-shortcut
+    position absolute
+    z-index 30
+    right 0
+    top 50%
+    transform translateY(-50%)
+    width 20px
+    padding 20px 0
+    border-radius 10px
+    text-align center
+    background $color-background-d
+    font-family Helvetica
+    .item
+      padding 3px
+      line-height 1
+      color $color-text-l
+      font-size $font-size-small
 </style>

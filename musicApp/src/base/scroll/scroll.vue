@@ -9,6 +9,12 @@
 import BScroll from 'better-scroll'
 export default {
   props: {
+    listenScroll: {
+      type: Boolean,
+      default () {
+        return true
+      }
+    },
     /*
     是否监听点击事件
     */
@@ -61,6 +67,12 @@ export default {
         probeType: this.probeType,
         click: this.click
       })
+
+      if (this.listenScroll) {
+        this.scroll.on('scroll', (pos) => {
+          this.$emit('scroll', pos)
+        })
+      }
     },
     /*
       手动刷新

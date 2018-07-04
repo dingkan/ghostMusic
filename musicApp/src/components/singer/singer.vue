@@ -1,7 +1,7 @@
 <!--  -->
 <template>
-  <div class="singer-wrapper">
-    <liseview :data="singerList"></liseview>
+  <div class="singer" ref="singer">
+    <liseview :data="singerList" ref="list"></liseview>
   </div>
 </template>
 
@@ -89,7 +89,7 @@ export default {
 
 </script>
 <style lang='stylus' rel='stylesheet/stylus'>
-.singer-wrapper
+.singer
   position fixed
   bottom 0
   top 88px
