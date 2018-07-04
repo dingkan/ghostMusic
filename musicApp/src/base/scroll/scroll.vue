@@ -25,7 +25,9 @@ export default {
       }
     },
     /*
-    监听滚动事件
+    1 滚动的时候会派发scroll事件会截流。
+    2 滚动的时候实时派发scroll事件不会截流。
+    3 除了实时派发scroll事件在swipe的情况下仍然能实时派发scroll事件
     */
     probeType: {
       type: Number,
@@ -49,6 +51,12 @@ export default {
       type: Number,
       default () {
         return 20
+      }
+    },
+    listenScroll: {
+      type: Boolean,
+      default () {
+        return true
       }
     }
   },
@@ -85,6 +93,12 @@ export default {
     },
     enable () {
       this.scroll && this.scroll.enable()
+    },
+    scrollTo () {
+      this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
+    },
+    scrollToElement () {
+      this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments)
     }
   },
   watch: {
