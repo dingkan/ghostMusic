@@ -52,12 +52,6 @@ export default {
       default () {
         return 20
       }
-    },
-    listenScroll: {
-      type: Boolean,
-      default () {
-        return true
-      }
     }
   },
   mounted () {
