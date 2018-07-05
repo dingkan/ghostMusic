@@ -28,7 +28,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     before(app) {
       app.use(bodyParser.urlencoded({extended: true}))
       const querystring = require('querystring')
-      app.get('/api/getDiscList', function (req, res) {
+      app.get('/api/getDiscList', function(req, res) {
         const url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
         axios.get(url, {
           headers: {
