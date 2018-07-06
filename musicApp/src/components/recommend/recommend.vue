@@ -26,6 +26,9 @@
           </ul>
         </div>
       </div>
+    <div class="loadingview" v-show="!silderArray.length">
+      <loading></loading>
+    </div>
   </scroll>
 </template>
 
@@ -34,7 +37,7 @@ import Scroll from 'base/scroll/scroll'
 import {getRecommend, getDiscList} from 'api/recommend.js'
 import {ERROR_OK} from 'api/config.js'
 import Silder from 'base/silder/silder'
-
+import Loading from 'base/loading/loading'
 export default {
   data () {
     return {
@@ -44,7 +47,8 @@ export default {
   },
   components: {
     Silder,
-    Scroll
+    Scroll,
+    Loading
   },
   created () {
     this._getRecommendDataFromServer()
@@ -109,4 +113,9 @@ export default {
           color $color-text
         .discview-subtitle
           color $color-text-d
+  .loadingview
+    position absolute
+    width 100%
+    top 50%
+    transform translateY(-50%)
 </style>

@@ -20,12 +20,16 @@
     <div class="list-fixed" v-show="fixedTitle" ref="fixed">
       <div class="fixed-title">{{fixedTitle}}</div>
     </div>
+    <div class="loadingview" v-show="!data.length">
+      <loading></loading>
+    </div>
   </Scroll>
 </template>
 
 <script type='text/ecmascript-6'>
 import Scroll from 'base/scroll/scroll'
 import {getData} from 'common/js/dom.js'
+import Loading from 'base/loading/loading'
 const ANCHOR_HEIGHT = 18
 const TITLE_HEIGHT = 30
 export default {
@@ -148,7 +152,8 @@ export default {
     }
   },
   components: {
-    Scroll
+    Scroll,
+    Loading
   }
 }
 
@@ -206,4 +211,9 @@ export default {
     padding-left 20px
     color $color-text-l
     background $color-highlight-background
+.loadingview
+  position absolute
+  width 100%
+  top 50%
+  transform translateY(-50%)
 </style>
