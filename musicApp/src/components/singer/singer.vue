@@ -1,7 +1,8 @@
 <!-- 歌手页面 -->
 <template>
   <div>
-    <listview :data="singerData" class="singer-wrapper"></listview>
+    <listview :data="singerData" class="singer-wrapper" @singerCellDidClick="cellDidClick"></listview>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -10,6 +11,7 @@ import {getSingerData} from 'api/singer.js'
 import {ERROR_OK} from 'api/config.js'
 import Singer from 'common/js/singer.js'
 import Listview from 'base/listview/listview'
+import {mapMutations} from 'vuex'
 const HOT_NAME = '热门'
 const HOT_LENGTH = 10
 export default {
@@ -25,6 +27,19 @@ export default {
     this._getSingerData()
   },
   methods: {
+    ...mapMutations({
+      setSinger: 'SET_SINGER'
+    }),
+    cellDidClick (singer) {
+      /*
+        这里通过router进行跳转
+      */
+      console.log(singer.id)
+      this.$router.push({
+        path: `/singer/${singer.id}`
+      })
+      this.setSinger(singer)
+    },
     _getSingerData () {
       getSingerData().then((result) => {
         if (result.code === ERROR_OK) {
@@ -85,9 +100,8 @@ export default {
 </script>
 <style lang='stylus' rel='stylesheet/stylus'>
 .singer-wrapper
-  position absolute
+  position fixed
   top 88px
   bottom 0px
   width 100%
-  overflow hidden
 </style>

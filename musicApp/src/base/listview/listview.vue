@@ -1,11 +1,11 @@
 <!-- 歌手组件 -->
 <template>
-  <Scroll :data="data" :listenScroll="listenScroll" :probeType="probeType" ref="scroll" @scroll="scroll">
+  <Scroll :data="data" :listenScroll="listenScroll" :probeType="probeType" ref="scroll" @scroll="scroll" :click="click">
     <ul>
       <li v-for="(group, index) in data" :key="index" class="listGroupView" ref="listGroupView">
         <h2 class="listGroupView-title">{{group.title}}</h2>
         <ul>
-          <li v-for="(item, index) in group.items" :key="index" class="listCellView">
+          <li v-for="(item, index) in group.items" :key="index" class="listCellView" @click="singerCellDidClick(item)">
             <img v-lazy="item.avatar" class="avatar">
             <span class="name">{{item.name}}</span>
           </li>
@@ -45,6 +45,7 @@ export default {
     this.probeType = 3
     this.touch = {}
     this.listGroupHeight = []
+    this.click = true
   },
   props: {
     data: {
@@ -55,6 +56,12 @@ export default {
     }
   },
   methods: {
+    singerCellDidClick (singer) {
+      /*
+        点击事件在组件内部，需要派发给外部事件
+      */
+      this.$emit('singerCellDidClick', singer)
+    },
     _setListGroupCHeight () {
       this.listGroupHeight = []
       let list = this.$refs.listGroupView
