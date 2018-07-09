@@ -1,7 +1,7 @@
 <!-- 歌手详情页 -->
 <template>
   <transition name="slide">
-    <MuiscList></MuiscList>
+    <MuiscList :singerName="singer.name" :bgImage="singer.avatar" :data="songData"></MuiscList>
   </transition>
 </template>
 
