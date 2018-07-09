@@ -6,9 +6,10 @@
     </div>
     <div class="title">{{singerName}}</div>
     <div class="bgImage" :style="bgStyle" ref="bgImage">
-      <div class="filter"></div>
+      <div class="filter" ref="filter"></div>
     </div>
-    <scroll :data="data" :listenScroll="listenScroll" :click="click" :probeType="probeType" class="list" ref="list">
+    <div class="bg-layer" ref="bgLayer"></div>
+    <scroll :data="data" :listenScroll="listenScroll" :click="click" :probeType="probeType" class="list" ref="list" @scroll="scroll">
       <div class="songList-wrapper">
         <ul>
           <li v-for="(song, index) in data" :key="index" class="songCell">
@@ -25,7 +26,13 @@
 
 <script type='text/ecmascript-6'>
 import Scroll from 'base/scroll/scroll'
+const NAVBAR_HEIGHT = 44
 export default {
+  data () {
+    return {
+      scrollY: 0
+    }
+  },
   created () {
     this.listenScroll = true
     this.click = true
@@ -34,10 +41,56 @@ export default {
   methods: {
     back () {
       this.$router.back()
+    },
+    scroll (newY) {
+      this.scrollY = newY.y
+    }
+  },
+  watch: {
+    scrollY (newY) {
+      let translateY = Math.max(this.minTransalteY, newY)
+      let zIndex = 0
+      let scale = 1
+      let blur = 0
+      const percent = Math.abs(newY / this.imageHeight)
+
+      if (newY > 0) {
+        scale = 1 + percent
+        zIndex = 10
+      } else {
+        blur = Math.min(20, percent * 20)
+      }
+
+      this.$refs.bgLayer.style['transform'] = `translate3d(0, ${translateY}px, 0)`
+      this.$refs.bgLayer.style['webkitTransform'] = `translate3d(0, ${translateY}px, 0)`
+      this.$refs.filter.style['backdrop-filter'] = `blur(${blur}px)`
+      this.$refs.filter.style['webkitBackdrop-filter'] = `blur(${blur}px)`
+      /*
+          当上啦超出导航栏位置是
+            1. 重新设置层级的优先级
+            2. 重新设置背景图片的高度和样式
+        */
+      if (newY < this.minTransalteY) {
+        zIndex = 11
+        this.$refs.bgImage.style.paddingTop = 0
+        this.$refs.bgImage.style.height = `${NAVBAR_HEIGHT}px`
+      } else {
+        this.$refs.bgImage.style.paddingTop = '70%'
+        this.$refs.bgImage.style.height = 0
+      }
+      this.$refs.bgImage.style.zIndex = zIndex
+      this.$refs.bgImage.style['transform'] = `scale(${scale})`
+      this.$refs.bgImage.style['webkitTransform'] = `scale(${scale})`
     }
   },
   mounted () {
+    /*
+      在监听scroll滚动的时候，我们需要做下极限位置的限制处理。所以我们这里需要缓存一下图片的高度
+      1.往下拉的极限高度是图片的高度
+      2.往上拉的极限高度是图片的高度-导航栏的高度
+    */
     this.imageHeight = this.$refs.bgImage.clientHeight
+    this.minTransalteY = -this.imageHeight + NAVBAR_HEIGHT
     this.$refs.list.$el.style.top = `${this.imageHeight}px`
   },
   computed: {
@@ -95,7 +148,7 @@ export default {
     position absolute
     top 0
     left 10%
-    z-index 10
+    z-index 11
     width 80%
     text-overflow ellipsis
     overflow hidden
@@ -111,13 +164,23 @@ export default {
     padding-top 70%
     transform-origin top
     background-size cover
+    .filter
+      position absolute
+      top 0
+      left 0
+      height 100%
+      width 100%
+      background rgba(7, 17, 27, 0.4)
+  .bg-layer
+    position relative
+    height 100%
+    background $color-background
   .list
     position absolute
     top 0
     bottom 0
     width 100%
     background $color-background
-    overflow hidden
     .songList-wrapper
       padding 20px 30px
       .songCell
