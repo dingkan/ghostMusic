@@ -34,7 +34,6 @@ export default {
       /*
         这里通过router进行跳转
       */
-      console.log(singer.id)
       this.$router.push({
         path: `/singer/${singer.id}`
       })

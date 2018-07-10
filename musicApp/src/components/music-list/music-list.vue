@@ -7,18 +7,17 @@
     <div class="title">{{singerName}}</div>
     <div class="bgImage" :style="bgStyle" ref="bgImage">
       <div class="filter" ref="filter"></div>
+      <div class="play-wrapper">
+        <div class="play" ref="playBtn">
+          <i class="icon-play"></i>
+          <span class="play-text">{{playText}}</span>
+        </div>
+      </div>
     </div>
     <div class="bg-layer" ref="bgLayer"></div>
     <scroll :data="data" :listenScroll="listenScroll" :click="click" :probeType="probeType" class="list" ref="list" @scroll="scroll">
       <div class="songList-wrapper">
-        <ul>
-          <li v-for="(song, index) in data" :key="index" class="songCell">
-            <div class="songConent">
-              <h2 class="songName" v-html="song.name"></h2>
-              <p class="songDes">{{song.singer}}·{{song.name}}</p>
-            </div>
-          </li>
-        </ul>
+        <song-list :data="data"></song-list>
       </div>
     </scroll>
   </div>
@@ -26,6 +25,10 @@
 
 <script type='text/ecmascript-6'>
 import Scroll from 'base/scroll/scroll'
+import SongList from 'base/songList/songList'
+import {prefixStyle} from 'common/js/dom.js'
+const transfrom = prefixStyle('transform')
+const backdropFilter = prefixStyle('backdrop-filter')
 const NAVBAR_HEIGHT = 44
 export default {
   data () {
@@ -37,6 +40,7 @@ export default {
     this.listenScroll = true
     this.click = true
     this.probeType = 3
+    this.playText = '随机播放全部'
   },
   methods: {
     back () {
@@ -61,26 +65,25 @@ export default {
         blur = Math.min(20, percent * 20)
       }
 
-      this.$refs.bgLayer.style['transform'] = `translate3d(0, ${translateY}px, 0)`
-      this.$refs.bgLayer.style['webkitTransform'] = `translate3d(0, ${translateY}px, 0)`
-      this.$refs.filter.style['backdrop-filter'] = `blur(${blur}px)`
-      this.$refs.filter.style['webkitBackdrop-filter'] = `blur(${blur}px)`
+      this.$refs.bgLayer.style[transfrom] = `translate3d(0, ${translateY}px, 0)`
+      this.$refs.filter.style[backdropFilter] = `blur(${blur}px)`
       /*
           当上啦超出导航栏位置是
             1. 重新设置层级的优先级
             2. 重新设置背景图片的高度和样式
         */
       if (newY < this.minTransalteY) {
-        zIndex = 11
+        zIndex = 10
         this.$refs.bgImage.style.paddingTop = 0
         this.$refs.bgImage.style.height = `${NAVBAR_HEIGHT}px`
+        this.$refs.playBtn.style.display = 'none'
       } else {
         this.$refs.bgImage.style.paddingTop = '70%'
         this.$refs.bgImage.style.height = 0
+        this.$refs.playBtn.style.display = ''
       }
       this.$refs.bgImage.style.zIndex = zIndex
-      this.$refs.bgImage.style['transform'] = `scale(${scale})`
-      this.$refs.bgImage.style['webkitTransform'] = `scale(${scale})`
+      this.$refs.bgImage.style[transfrom] = `scale(${scale})`
     }
   },
   mounted () {
@@ -99,7 +102,8 @@ export default {
     }
   },
   components: {
-    Scroll
+    Scroll,
+    SongList
   },
   props: {
     singerName: {
@@ -171,6 +175,30 @@ export default {
       height 100%
       width 100%
       background rgba(7, 17, 27, 0.4)
+    .play-wrapper
+      position absolute
+      bottom 20px
+      width 100%
+      z-index 50
+      .play
+        box-sizing border-box
+        width 135px
+        padding 7px 0
+        margin 0 auto
+        text-align center
+        border 1px solid $color-theme
+        color $color-theme
+        border-radius 10px
+        font-size 0
+        .icon-play
+          display inline-block
+          font-size $font-size-medium-x
+          margin-right 6px
+          vertical-align middle
+        .play-text
+          display inline-block
+          font-size $font-size-small
+          vertical-align middle
   .bg-layer
     position relative
     height 100%
@@ -181,27 +209,4 @@ export default {
     bottom 0
     width 100%
     background $color-background
-    .songList-wrapper
-      padding 20px 30px
-      .songCell
-        display flex
-        align-items center
-        box-sizing border-box
-        height 64px
-        font-size $font-size-medium
-        .songConent
-          flex 1
-          overflow hidden
-          line-height 20px
-          .songName
-            text-overflow ellipsis
-            overflow hidden
-            white-space nowrap
-            color $color-text
-          .songDes
-            text-overflow ellipsis
-            overflow hidden
-            white-space nowrap
-            color $color-text-d
-            margin-top 4px
 </style>
